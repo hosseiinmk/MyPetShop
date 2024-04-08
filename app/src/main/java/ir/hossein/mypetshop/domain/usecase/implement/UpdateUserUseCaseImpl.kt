@@ -2,14 +2,14 @@ package ir.hossein.mypetshop.domain.usecase.implement
 
 import ir.hossein.mypetshop.data.model.User
 import ir.hossein.mypetshop.domain.repository.UserRepository
-import ir.hossein.mypetshop.domain.usecase.RegisterUserUseCase
+import ir.hossein.mypetshop.domain.usecase.UpdateUserUseCase
 import javax.inject.Inject
 
-internal class RegisterUserUseCaseImpl @Inject constructor(
+internal class UpdateUserUseCaseImpl @Inject constructor(
     private val userRepository: UserRepository
-) : RegisterUserUseCase {
+) : UpdateUserUseCase {
 
     override suspend fun invoke(user: User) {
-        userRepository.registerUser(user = user)
+        userRepository.updateUser(user = user)
     }
 }

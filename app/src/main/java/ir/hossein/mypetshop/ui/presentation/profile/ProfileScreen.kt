@@ -1,20 +1,24 @@
 package ir.hossein.mypetshop.ui.presentation.profile
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -23,52 +27,72 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import ir.hossein.mypetshop.data.model.User
+import ir.hossein.mypetshop.ui.presentation.loading.LoadingScreen
+import ir.hossein.mypetshop.ui.theme.Black
 import ir.hossein.mypetshop.ui.theme.Green
 import ir.hossein.mypetshop.ui.theme.Red
+import ir.hossein.mypetshop.ui.theme.SkyBlue
+import ir.hossein.mypetshop.ui.utils.Constant
 
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
+    gotoHome: () -> Unit
 ) {
 
     val state by viewModel.state().collectAsState()
 
-    AnimatedVisibility(visible = state.registerDialog) {
-        RegisterDialog(
-            state = state,
-            onTypingEmail = {
-                viewModel.updateState { copy(email = it) }
-            },
-            onConfirm = { email ->
-                viewModel.registerUser(
-                    User(
-                        username = "",
-                        name = "",
-                        family = "",
-                        email = email
-                    )
-                )
-            },
-            onDismiss = {
-                viewModel.updateState { copy(registerDialog = false) }
+    AnimatedContent(targetState = state.isLoading, label = "") { isLoading ->
+        when (isLoading) {
+            true -> {
+                LoadingScreen()
             }
-        )
-    }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Button(onClick = {
-            viewModel.updateState { copy(registerDialog = true) }
-        }) {
-            Text(text = "ثبت نام")
+            else -> {
+                AnimatedContent(
+                    targetState = state.registerDialog, label = ""
+                ) { showDialog ->
+                    when (showDialog) {
+                        true -> {
+                            RegisterDialog(
+                                state = state,
+                                onTypingEmail = {
+                                    viewModel.updateState { copy(email = it) }
+                                },
+                                onConfirm = { email ->
+                                    viewModel.registerUser(
+                                        User(
+                                            username = "NewUser",
+                                            name = "",
+                                            family = "",
+                                            email = email,
+                                            isLogged = 1,
+                                            thumbnail = Constant.PROFILE_IMAGE
+                                        )
+                                    )
+                                },
+                                onDismiss = { gotoHome() }
+                            )
+                        }
+
+                        else -> {
+                            Profile(state = state, logout = {
+                                viewModel.logoutUser()
+                                viewModel.updateState { copy(registerDialog = true) }
+                            })
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -80,13 +104,10 @@ fun RegisterDialog(
     onConfirm: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
-
     Dialog(onDismissRequest = { onDismiss() }) {
         Card(
             modifier = Modifier.height(300.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White
-            ),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             shape = RoundedCornerShape(16.dp)
         ) {
             Column(
@@ -96,11 +117,7 @@ fun RegisterDialog(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                Text(
-                    text = "جهت ثبت حساب کاربری ایمیل خود را وارد کنید",
-                    color = Color.Black
-                )
+                Text(text = "جهت ثبت حساب کاربری ایمیل خود را وارد کنید")
                 Spacer(modifier = Modifier.height(16.dp))
                 TextField(
                     value = state.email,
@@ -117,41 +134,91 @@ fun RegisterDialog(
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color.White,
                         focusedContainerColor = Color.White,
-                        focusedTextColor = Color.Black
+                        focusedTextColor = Black
                     ),
-                    keyboardActions = KeyboardActions(onDone = {
-                        onConfirm(state.email)
-
-                    })
+                    keyboardActions = KeyboardActions(onDone = { onConfirm(state.email) })
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = { onConfirm(state.email) },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Green
-                    ),
-                    shape = RoundedCornerShape(0.dp)
+                    colors = ButtonDefaults.buttonColors(containerColor = Green),
+                    shape = RoundedCornerShape(5.dp)
                 ) {
-                    Text(
-                        text = "ثبت",
-                        color = Color.White
-                    )
+                    Text(text = "ثبت", color = Color.White)
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = { onDismiss() },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Red
-                    ),
-                    shape = RoundedCornerShape(0.dp)
+                    colors = ButtonDefaults.buttonColors(containerColor = Red),
+                    shape = RoundedCornerShape(5.dp)
                 ) {
-                    Text(
-                        text = "لغو",
-                        color = Color.White
-                    )
+                    Text(text = "لغو", color = Color.White)
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun Profile(state: ProfileUiState, logout: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.surface)
+            .padding(8.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        AsyncImage(
+            model = state.user?.thumbnail,
+            contentDescription = null,
+            modifier = Modifier
+                .width(100.dp)
+                .height(100.dp)
+                .clip(shape = CircleShape),
+            contentScale = ContentScale.Crop
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = "${state.user?.email}")
+        Spacer(modifier = Modifier.height(8.dp))
+        AnimatedVisibility(visible = state.user?.username != "") {
+            Text(text = "@${state.user?.username}")
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        AnimatedVisibility(
+            visible = state.user?.name != "" && state.user?.family != ""
+        ) {
+            Text(text = "${state.user?.name}" + " " + "${state.user?.family}")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Column {
+            Button(
+                onClick = { logout() },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(5.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = SkyBlue,
+                    contentColor = Black
+                )
+            ) {
+                Text(text = "خروج از حساب کاربری")
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = {
+
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(5.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = SkyBlue,
+                    contentColor = Black
+                )
+            ) {
+                Text(text = "بعدا اضافه میشود")
             }
         }
     }

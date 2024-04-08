@@ -10,5 +10,7 @@ data class User(
     val username: String,
     val name: String,
     val family: String,
-    val email: String
+    val email: String,
+    val isLogged: Int,
+    val thumbnail: String
 )

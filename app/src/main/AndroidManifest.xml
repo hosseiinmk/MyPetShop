@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".MyPetShopApplication"
         android:allowBackup="true"
@@ -16,7 +18,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen">
+            android:theme="@style/Theme.MyPetShop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

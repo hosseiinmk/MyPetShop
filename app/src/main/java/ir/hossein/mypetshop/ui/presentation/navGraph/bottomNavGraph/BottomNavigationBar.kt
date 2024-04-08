@@ -7,9 +7,8 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import ir.hossein.mypetshop.core.bottomNavItemSelected
 
 @Composable
 fun BottomNavigationBar(
@@ -22,18 +21,16 @@ fun BottomNavigationBar(
         BottomNavItems.Home
     )
 
-    val selectedItem = remember { mutableIntStateOf(items.size - 1) }
-
     NavigationBar(
         modifier = Modifier.fillMaxWidth(),
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
-        contentColor = MaterialTheme.colorScheme.primary
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface
     ) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
-                selected = selectedItem.intValue == index,
+                selected = bottomNavItemSelected.value == index,
                 onClick = {
-                    selectedItem.intValue = index
+                    bottomNavItemSelected.value = index
                     goToDestination(item.route)
                 },
                 icon = { Icon(imageVector = item.icon, contentDescription = null) },

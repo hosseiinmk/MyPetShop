@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ir.hossein.mypetshop.core.bottomNavItemSelected
 import ir.hossein.mypetshop.ui.presentation.profile.ProfileScreen
 import ir.hossein.mypetshop.ui.presentation.addProduct.AddProduct
 import ir.hossein.mypetshop.ui.presentation.home.HomeScreen
@@ -42,7 +43,12 @@ fun MainNavGraph() {
                 AddProduct()
             }
             composable(route = NavigationDestination.Profile.route) {
-                ProfileScreen()
+                ProfileScreen(
+                    gotoHome = {
+                        navController.navigate(route = NavigationDestination.Home.route)
+                        bottomNavItemSelected.value = 2
+                    }
+                )
             }
         }
     }

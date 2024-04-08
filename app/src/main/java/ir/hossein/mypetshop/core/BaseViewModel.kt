@@ -16,7 +16,7 @@ abstract class BaseViewModel<T>(uiState: T) : ViewModel() {
 
     fun state(): StateFlow<T> = state.asStateFlow()
 
-    private fun stateValue(): T = state().value
+    fun stateValue(): T = state().value
 
     fun updateState(newState: T.() -> T) {
         state.value = newState(stateValue())

@@ -3,6 +3,7 @@ package ir.hossein.mypetshop.ui.presentation.splash
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,7 +17,7 @@ fun SplashScreen(
 ) {
 
     LaunchedEffect(key1 = Unit, block = {
-        delay(3000)
+        delay(1000)
         goToHome()
     })
 
