@@ -1,5 +1,6 @@
 package ir.hossein.mypetshop.ui.presentation.profile
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -23,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -35,13 +37,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import ir.hossein.mypetshop.data.model.User
+import ir.hossein.mypetshop.domain.model.User
+import ir.hossein.mypetshop.ui.navigation.enterAndExitTransitionTogether
 import ir.hossein.mypetshop.ui.presentation.loading.LoadingScreen
 import ir.hossein.mypetshop.ui.theme.Black
 import ir.hossein.mypetshop.ui.theme.Green
 import ir.hossein.mypetshop.ui.theme.Red
 import ir.hossein.mypetshop.ui.theme.SkyBlue
-import ir.hossein.mypetshop.ui.utils.Constant
+import ir.hossein.mypetshop.ui.utils.log
 
 @Composable
 fun ProfileScreen(
@@ -49,45 +52,60 @@ fun ProfileScreen(
     gotoHome: () -> Unit
 ) {
 
-    val state by viewModel.state().collectAsState()
+    val state by viewModel.state.collectAsState()
 
-    AnimatedContent(targetState = state.isLoading, label = "") { isLoading ->
-        when (isLoading) {
+    LaunchedEffect(key1 = state.userExists, block = {
+        log("is user exists: ${state.userExists}")
+    })
+
+    AnimatedContent(
+        targetState = state.loading,
+        modifier = Modifier.fillMaxSize(),
+        label = "",
+        transitionSpec = { enterAndExitTransitionTogether() }
+    ) { loading ->
+        when (loading) {
             true -> {
                 LoadingScreen()
             }
 
             else -> {
-                AnimatedContent(
-                    targetState = state.registerDialog, label = ""
-                ) { showDialog ->
-                    when (showDialog) {
-                        true -> {
-                            RegisterDialog(
-                                state = state,
-                                onTypingEmail = {
-                                    viewModel.updateState { copy(email = it) }
-                                },
-                                onConfirm = { email ->
-                                    viewModel.registerUser(
-                                        User(
-                                            username = "NewUser",
-                                            name = "",
-                                            family = "",
-                                            email = email,
-                                            isLogged = 1,
-                                            thumbnail = Constant.PROFILE_IMAGE
-                                        )
-                                    )
-                                },
-                                onDismiss = { gotoHome() }
-                            )
-                        }
+                when (state.showDialog) {
+                    true -> {
+                        when (state.users.isNotEmpty()) {
+                            true -> {
+                                LoginDialog(
+                                    state = state,
+                                    onTypingEmail = { viewModel.updateState { copy(email = it) } },
+                                    onConfirm = { viewModel.loginUser(email = it) },
+                                    onDismiss = {
+                                        viewModel.updateState { copy(showDialog = false) }
+                                        gotoHome()
+                                    }
+                                )
+                            }
 
-                        else -> {
+                            else -> {
+                                RegisterDialog(
+                                    state = state,
+                                    onTypingEmail = { viewModel.updateState { copy(email = it) } },
+                                    onConfirm = { viewModel.registerUser(User.default.copy(email = it)) },
+                                    onDismiss = {
+                                        viewModel.updateState {
+                                            copy(showDialog = false)
+                                        }
+                                        gotoHome()
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    else -> {
+                        state.activeUser?.let {
                             Profile(state = state, logout = {
                                 viewModel.logoutUser()
-                                viewModel.updateState { copy(registerDialog = true) }
+                                gotoHome()
                             })
                         }
                     }
@@ -95,6 +113,8 @@ fun ProfileScreen(
             }
         }
     }
+
+    BackHandler { gotoHome() }
 }
 
 @Composable
@@ -162,6 +182,70 @@ fun RegisterDialog(
 }
 
 @Composable
+fun LoginDialog(
+    state: ProfileUiState,
+    onTypingEmail: (String) -> Unit,
+    onConfirm: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    Dialog(onDismissRequest = { onDismiss() }) {
+        Card(
+            modifier = Modifier.height(300.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "جهت ورود به حساب کاربری ایمیل خود را وارد کنید", textAlign = TextAlign.Center)
+                Spacer(modifier = Modifier.height(16.dp))
+                TextField(
+                    value = state.email,
+                    onValueChange = { onTypingEmail(it) },
+                    placeholder = {
+                        Text(
+                            text = "ایمیل",
+                            color = Color.Gray,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.End
+                        )
+                    },
+                    singleLine = true,
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.White,
+                        focusedContainerColor = Color.White,
+                        focusedTextColor = Black
+                    ),
+                    keyboardActions = KeyboardActions(onDone = { onConfirm(state.email) })
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = { onConfirm(state.email) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = Green),
+                    shape = RoundedCornerShape(5.dp)
+                ) {
+                    Text(text = "ورود", color = Color.White)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = { onDismiss() },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = Red),
+                    shape = RoundedCornerShape(5.dp)
+                ) {
+                    Text(text = "لغو", color = Color.White)
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun Profile(state: ProfileUiState, logout: () -> Unit) {
     Column(
         modifier = Modifier
@@ -173,7 +257,7 @@ fun Profile(state: ProfileUiState, logout: () -> Unit) {
     ) {
 
         AsyncImage(
-            model = state.user?.thumbnail,
+            model = state.activeUser?.thumbnail,
             contentDescription = null,
             modifier = Modifier
                 .width(100.dp)
@@ -182,16 +266,16 @@ fun Profile(state: ProfileUiState, logout: () -> Unit) {
             contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = "${state.user?.email}")
+        Text(text = "${state.activeUser?.email}")
         Spacer(modifier = Modifier.height(8.dp))
-        AnimatedVisibility(visible = state.user?.username != "") {
-            Text(text = "@${state.user?.username}")
+        AnimatedVisibility(visible = state.activeUser?.username != "") {
+            Text(text = "@${state.activeUser?.username}")
         }
         Spacer(modifier = Modifier.height(8.dp))
         AnimatedVisibility(
-            visible = state.user?.name != "" && state.user?.family != ""
+            visible = state.activeUser?.name != "" && state.activeUser?.family != ""
         ) {
-            Text(text = "${state.user?.name}" + " " + "${state.user?.family}")
+            Text(text = "${state.activeUser?.name}" + " " + "${state.activeUser?.family}")
         }
         Spacer(modifier = Modifier.height(16.dp))
         Column {

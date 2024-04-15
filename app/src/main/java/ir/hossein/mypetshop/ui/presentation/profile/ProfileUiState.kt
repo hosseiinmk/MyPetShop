@@ -1,10 +1,12 @@
 package ir.hossein.mypetshop.ui.presentation.profile
 
-import ir.hossein.mypetshop.data.model.User
+import ir.hossein.mypetshop.domain.model.User
 
 data class ProfileUiState(
-    val user: User? = null,
+    val activeUser: User? = null,
+    val users: List<User> = emptyList(),
     val email: String = "",
-    val registerDialog: Boolean = false,
-    val isLoading: Boolean = false
+    val showDialog: Boolean = false,
+    val userExists: Boolean = false,
+    val loading: Boolean = false
 )

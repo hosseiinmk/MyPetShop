@@ -13,8 +13,8 @@ interface UserDao {
     @Insert
     suspend fun registerUser(user: User)
 
-    @Query("SELECT * FROM users WHERE id = :userId")
-    suspend fun getUser(userId: Int): User
+    @Query("SELECT * FROM users WHERE email = :email")
+    suspend fun getUser(email: String): User
 
     @Query("SELECT * FROM users")
     fun getUsers(): Flow<List<User>>

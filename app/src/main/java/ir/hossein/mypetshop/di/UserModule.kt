@@ -6,9 +6,11 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ir.hossein.mypetshop.domain.repository.UserRepository
 import ir.hossein.mypetshop.data.repository.UserRepositoryImpl
+import ir.hossein.mypetshop.domain.usecase.GetUserUseCase
 import ir.hossein.mypetshop.domain.usecase.GetUsersUseCase
 import ir.hossein.mypetshop.domain.usecase.RegisterUserUseCase
 import ir.hossein.mypetshop.domain.usecase.UpdateUserUseCase
+import ir.hossein.mypetshop.domain.usecase.implement.GetUserUseCaseImpl
 import ir.hossein.mypetshop.domain.usecase.implement.GetUsersUseCaseImpl
 import ir.hossein.mypetshop.domain.usecase.implement.RegisterUserUseCaseImpl
 import ir.hossein.mypetshop.domain.usecase.implement.UpdateUserUseCaseImpl
@@ -35,6 +37,12 @@ abstract class UserModule {
     internal abstract fun bindGetUsersUseCase(
         getUsersUseCaseImpl: GetUsersUseCaseImpl
     ): GetUsersUseCase
+
+    @Binds
+    @Singleton
+    internal abstract fun bindGetUserUseCase(
+        getUserUseCaseImpl: GetUserUseCaseImpl
+    ): GetUserUseCase
 
     @Binds
     @Singleton

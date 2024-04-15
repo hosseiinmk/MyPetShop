@@ -1,8 +1,10 @@
 package ir.hossein.mypetshop.data.model
 
+import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+@Keep
 @Entity(tableName = "users")
 data class User(
     @PrimaryKey(autoGenerate = true)
@@ -11,6 +13,6 @@ data class User(
     val name: String,
     val family: String,
     val email: String,
-    val isLogged: Int,
+    val logged: Int,
     val thumbnail: String
 )

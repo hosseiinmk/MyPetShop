@@ -1,9 +1,10 @@
-package ir.hossein.mypetshop.ui.presentation.navGraph
+package ir.hossein.mypetshop.ui.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -11,12 +12,10 @@ import ir.hossein.mypetshop.core.bottomNavItemSelected
 import ir.hossein.mypetshop.ui.presentation.profile.ProfileScreen
 import ir.hossein.mypetshop.ui.presentation.addProduct.AddProduct
 import ir.hossein.mypetshop.ui.presentation.home.HomeScreen
-import ir.hossein.mypetshop.ui.presentation.navGraph.bottomNavGraph.BottomNavigationBar
+import ir.hossein.mypetshop.ui.component.bottomNavigationBar.BottomNavigationBar
 
 @Composable
-fun MainNavGraph() {
-
-    val navController = rememberNavController()
+fun MainNavGraph(navController: NavHostController = rememberNavController()) {
 
     Scaffold(
         bottomBar = {
@@ -34,18 +33,24 @@ fun MainNavGraph() {
         NavHost(
             navController = navController,
             startDestination = NavigationDestination.Home.route,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            enterTransition = { transitionIntoContainer() },
+            exitTransition = { transitionOutOfContainer() }
         ) {
-            composable(route = NavigationDestination.Home.route) {
+            composable(
+                route = NavigationDestination.Home.route
+            ) {
                 HomeScreen()
             }
             composable(route = NavigationDestination.AddProduct.route) {
                 AddProduct()
             }
-            composable(route = NavigationDestination.Profile.route) {
+            composable(
+                route = NavigationDestination.Profile.route
+            ) {
                 ProfileScreen(
                     gotoHome = {
-                        navController.navigate(route = NavigationDestination.Home.route)
+                        navController.navigateUp()
                         bottomNavItemSelected.value = 2
                     }
                 )

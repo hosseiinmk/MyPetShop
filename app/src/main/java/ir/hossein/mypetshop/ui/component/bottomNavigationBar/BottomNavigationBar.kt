@@ -1,4 +1,4 @@
-package ir.hossein.mypetshop.ui.presentation.navGraph.bottomNavGraph
+package ir.hossein.mypetshop.ui.component.bottomNavigationBar
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Icon
@@ -34,7 +34,8 @@ fun BottomNavigationBar(
                     goToDestination(item.route)
                 },
                 icon = { Icon(imageVector = item.icon, contentDescription = null) },
-                label = { Text(text = item.label) }
+                label = { Text(text = item.label) },
+                alwaysShowLabel = false
             )
         }
     }

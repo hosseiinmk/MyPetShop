@@ -8,9 +8,9 @@ interface UserRepository {
 
     suspend fun registerUser(user: User)
 
-    suspend fun getUser(id: Int): User
+    suspend fun getUser(email: String): User
 
-    suspend fun getUsers(): Response<Flow<List<User>>>
+    suspend fun getUsers(): Flow<Response<List<User>>>
 
     suspend fun updateUser(user: User)
 }

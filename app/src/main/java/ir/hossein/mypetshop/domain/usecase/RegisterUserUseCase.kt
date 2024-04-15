@@ -1,6 +1,6 @@
 package ir.hossein.mypetshop.domain.usecase
 
-import ir.hossein.mypetshop.data.model.User
+import ir.hossein.mypetshop.domain.model.User
 
 interface RegisterUserUseCase {
 

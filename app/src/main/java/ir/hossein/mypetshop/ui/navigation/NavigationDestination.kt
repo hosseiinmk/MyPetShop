@@ -1,4 +1,4 @@
-package ir.hossein.mypetshop.ui.presentation.navGraph
+package ir.hossein.mypetshop.ui.navigation
 
 sealed class NavigationDestination(val route: String) {
     data object Splash: NavigationDestination(route = "splash")

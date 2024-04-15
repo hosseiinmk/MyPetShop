@@ -1,4 +1,4 @@
-package ir.hossein.mypetshop.ui.presentation.navGraph
+package ir.hossein.mypetshop.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost

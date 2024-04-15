@@ -10,16 +10,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-abstract class BaseViewModel<T>(uiState: T) : ViewModel() {
+open class BaseViewModel<T>(uiState: T) : ViewModel() {
 
-    private val state: MutableStateFlow<T> = MutableStateFlow(uiState)
+    private val _state: MutableStateFlow<T> = MutableStateFlow(uiState)
+    val state: StateFlow<T> = _state.asStateFlow()
 
-    fun state(): StateFlow<T> = state.asStateFlow()
-
-    fun stateValue(): T = state().value
+    fun stateValue(): T = state.value
 
     fun updateState(newState: T.() -> T) {
-        state.value = newState(stateValue())
+        _state.value = newState(stateValue())
     }
 
     fun baseViewModelScope(

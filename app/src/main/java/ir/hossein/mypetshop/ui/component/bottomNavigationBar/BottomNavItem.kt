@@ -1,11 +1,11 @@
-package ir.hossein.mypetshop.ui.presentation.navGraph.bottomNavGraph
+package ir.hossein.mypetshop.ui.component.bottomNavigationBar
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.vector.ImageVector
-import ir.hossein.mypetshop.ui.presentation.navGraph.NavigationDestination
+import ir.hossein.mypetshop.ui.navigation.NavigationDestination
 
 sealed class BottomNavItems(val route: String, val icon: ImageVector, val label: String) {
 
