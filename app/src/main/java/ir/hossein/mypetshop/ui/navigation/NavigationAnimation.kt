@@ -15,37 +15,29 @@ import androidx.navigation.NavBackStackEntry
 
 fun AnimatedContentTransitionScope<NavBackStackEntry>.transitionIntoContainer(): EnterTransition =
     fadeIn(
-        animationSpec = tween(
-            300, easing = LinearEasing
-        )
+        animationSpec = tween(durationMillis = 300, easing = LinearEasing)
     ) + slideIntoContainer(
-        animationSpec = tween(300, easing = EaseIn),
+        animationSpec = tween(durationMillis = 300, easing = EaseIn),
         towards = AnimatedContentTransitionScope.SlideDirection.Start
     )
 
 fun AnimatedContentTransitionScope<NavBackStackEntry>.transitionOutOfContainer(): ExitTransition =
     fadeOut(
-        animationSpec = tween(
-            300, easing = LinearEasing
-        )
+        animationSpec = tween(durationMillis = 300, easing = LinearEasing)
     ) + slideOutOfContainer(
-        animationSpec = tween(300, easing = EaseOut),
-        towards = AnimatedContentTransitionScope.SlideDirection.End
+        animationSpec = tween(durationMillis = 300, easing = EaseOut),
+        towards = AnimatedContentTransitionScope.SlideDirection.Start
     )
 
 fun AnimatedContentTransitionScope<Boolean>.enterAndExitTransitionTogether(): ContentTransform =
     fadeIn(
-        animationSpec = tween(
-            300, easing = LinearEasing
-        )
+        animationSpec = tween(durationMillis = 300, easing = LinearEasing)
     ) + slideIntoContainer(
-        animationSpec = tween(300, easing = EaseIn),
+        animationSpec = tween(durationMillis = 300, easing = EaseIn),
         towards = AnimatedContentTransitionScope.SlideDirection.Start
     ) togetherWith fadeOut(
-        animationSpec = tween(
-            300, easing = LinearEasing
-        )
+        animationSpec = tween(durationMillis = 300, easing = LinearEasing)
     ) + slideOutOfContainer(
-        animationSpec = tween(300, easing = EaseOut),
-        towards = AnimatedContentTransitionScope.SlideDirection.End
+        animationSpec = tween(durationMillis = 300, easing = EaseOut),
+        towards = AnimatedContentTransitionScope.SlideDirection.Start
     )

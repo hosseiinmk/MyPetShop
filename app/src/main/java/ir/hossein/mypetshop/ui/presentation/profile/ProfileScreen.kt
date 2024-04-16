@@ -49,7 +49,7 @@ import ir.hossein.mypetshop.ui.utils.log
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
-    gotoHome: () -> Unit
+    goToHome: () -> Unit
 ) {
 
     val state by viewModel.state.collectAsState()
@@ -80,7 +80,7 @@ fun ProfileScreen(
                                     onConfirm = { viewModel.loginUser(email = it) },
                                     onDismiss = {
                                         viewModel.updateState { copy(showDialog = false) }
-                                        gotoHome()
+                                        goToHome()
                                     }
                                 )
                             }
@@ -94,7 +94,7 @@ fun ProfileScreen(
                                         viewModel.updateState {
                                             copy(showDialog = false)
                                         }
-                                        gotoHome()
+                                        goToHome()
                                     }
                                 )
                             }
@@ -105,7 +105,7 @@ fun ProfileScreen(
                         state.activeUser?.let {
                             Profile(state = state, logout = {
                                 viewModel.logoutUser()
-                                gotoHome()
+                                goToHome()
                             })
                         }
                     }
@@ -114,7 +114,7 @@ fun ProfileScreen(
         }
     }
 
-    BackHandler { gotoHome() }
+    BackHandler { goToHome() }
 }
 
 @Composable

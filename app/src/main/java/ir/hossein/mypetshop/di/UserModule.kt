@@ -4,16 +4,18 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ir.hossein.mypetshop.data.repository.ProductRepositoryImpl
 import ir.hossein.mypetshop.domain.repository.UserRepository
 import ir.hossein.mypetshop.data.repository.UserRepositoryImpl
-import ir.hossein.mypetshop.domain.usecase.GetUserUseCase
-import ir.hossein.mypetshop.domain.usecase.GetUsersUseCase
-import ir.hossein.mypetshop.domain.usecase.RegisterUserUseCase
-import ir.hossein.mypetshop.domain.usecase.UpdateUserUseCase
-import ir.hossein.mypetshop.domain.usecase.implement.GetUserUseCaseImpl
-import ir.hossein.mypetshop.domain.usecase.implement.GetUsersUseCaseImpl
-import ir.hossein.mypetshop.domain.usecase.implement.RegisterUserUseCaseImpl
-import ir.hossein.mypetshop.domain.usecase.implement.UpdateUserUseCaseImpl
+import ir.hossein.mypetshop.domain.repository.ProductRepository
+import ir.hossein.mypetshop.domain.usecase.userUsecase.GetUserUseCase
+import ir.hossein.mypetshop.domain.usecase.userUsecase.GetUsersUseCase
+import ir.hossein.mypetshop.domain.usecase.userUsecase.RegisterUserUseCase
+import ir.hossein.mypetshop.domain.usecase.userUsecase.UpdateUserUseCase
+import ir.hossein.mypetshop.domain.usecase.userUsecase.implement.GetUserUseCaseImpl
+import ir.hossein.mypetshop.domain.usecase.userUsecase.implement.GetUsersUseCaseImpl
+import ir.hossein.mypetshop.domain.usecase.userUsecase.implement.RegisterUserUseCaseImpl
+import ir.hossein.mypetshop.domain.usecase.userUsecase.implement.UpdateUserUseCaseImpl
 import javax.inject.Singleton
 
 @Module

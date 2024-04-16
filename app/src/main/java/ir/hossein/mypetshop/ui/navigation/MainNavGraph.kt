@@ -43,13 +43,18 @@ fun MainNavGraph(navController: NavHostController = rememberNavController()) {
                 HomeScreen()
             }
             composable(route = NavigationDestination.AddProduct.route) {
-                AddProduct()
+                AddProduct(
+                    goToHome = {
+                        navController.navigateUp()
+                        bottomNavItemSelected.value = 2
+                    }
+                )
             }
             composable(
                 route = NavigationDestination.Profile.route
             ) {
                 ProfileScreen(
-                    gotoHome = {
+                    goToHome = {
                         navController.navigateUp()
                         bottomNavItemSelected.value = 2
                     }

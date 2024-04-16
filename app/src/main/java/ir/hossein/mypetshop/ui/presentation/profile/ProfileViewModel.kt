@@ -3,10 +3,10 @@ package ir.hossein.mypetshop.ui.presentation.profile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.hossein.mypetshop.core.BaseViewModel
 import ir.hossein.mypetshop.domain.model.User
-import ir.hossein.mypetshop.domain.usecase.GetUserUseCase
-import ir.hossein.mypetshop.domain.usecase.GetUsersUseCase
-import ir.hossein.mypetshop.domain.usecase.RegisterUserUseCase
-import ir.hossein.mypetshop.domain.usecase.UpdateUserUseCase
+import ir.hossein.mypetshop.domain.usecase.userUsecase.GetUserUseCase
+import ir.hossein.mypetshop.domain.usecase.userUsecase.GetUsersUseCase
+import ir.hossein.mypetshop.domain.usecase.userUsecase.RegisterUserUseCase
+import ir.hossein.mypetshop.domain.usecase.userUsecase.UpdateUserUseCase
 import ir.hossein.mypetshop.ui.utils.Response
 import ir.hossein.mypetshop.ui.utils.log
 import kotlinx.coroutines.Dispatchers

@@ -1,4 +1,4 @@
-package ir.hossein.mypetshop.domain.usecase
+package ir.hossein.mypetshop.domain.usecase.userUsecase
 
 import ir.hossein.mypetshop.domain.model.User
 import ir.hossein.mypetshop.ui.utils.Response

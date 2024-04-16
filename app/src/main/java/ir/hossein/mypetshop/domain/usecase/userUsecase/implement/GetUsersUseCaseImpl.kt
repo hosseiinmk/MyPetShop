@@ -1,8 +1,8 @@
-package ir.hossein.mypetshop.domain.usecase.implement
+package ir.hossein.mypetshop.domain.usecase.userUsecase.implement
 
 import ir.hossein.mypetshop.domain.model.User
 import ir.hossein.mypetshop.domain.repository.UserRepository
-import ir.hossein.mypetshop.domain.usecase.GetUsersUseCase
+import ir.hossein.mypetshop.domain.usecase.userUsecase.GetUsersUseCase
 import ir.hossein.mypetshop.domain.utils.mapToDomain
 import ir.hossein.mypetshop.ui.utils.Response
 import ir.hossein.mypetshop.ui.utils.log
