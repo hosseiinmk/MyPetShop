@@ -1,5 +1,9 @@
 package ir.hossein.mypetshop.ui.presentation.addProduct
 
+import android.app.Application
+import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.hossein.mypetshop.core.BaseViewModel
 import ir.hossein.mypetshop.domain.model.Product
@@ -20,11 +24,20 @@ class AddProductViewModel @Inject constructor(
                     name = stateValue().name,
                     price = stateValue().price.toInt(),
                     category = stateValue().category,
-                    amount = stateValue().amount.toInt()
+                    amount = stateValue().amount.toInt(),
+                    image = stateValue().image.toString()
                 )
             )
             clearProduct()
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.P)
+    fun setImage(uri: Uri) {
+//        val imageBitmap = ImageDecoder.createSource(application.contentResolver, uri).let {
+//            ImageDecoder.decodeBitmap(it)
+//        }
+        updateState { copy(image = uri) }
     }
 
     fun setProductName(productName: String) {
@@ -43,12 +56,22 @@ class AddProductViewModel @Inject constructor(
         updateState { copy(amount = productAmount) }
     }
 
-    private fun isProductValid(): Boolean = stateValue().name != Product.default.name &&
-            stateValue().price != Product.default.price.toString() &&
-            stateValue().category != Product.default.category &&
-            stateValue().amount != Product.default.amount.toString()
+    private fun isProductValid(): Boolean =
+        stateValue().image.toString() != Product.default.image &&
+                stateValue().name != Product.default.name &&
+                stateValue().price != Product.default.price.toString() &&
+                stateValue().category != Product.default.category &&
+                stateValue().amount != Product.default.amount.toString()
 
     private fun clearProduct() {
-        updateState { copy(name = "", price = "", category = -1, amount = "") }
+        updateState {
+            copy(
+                name = "NewProduct",
+                price = "",
+                category = -1,
+                amount = "",
+                image = null
+            )
+        }
     }
 }

@@ -1,6 +1,11 @@
 package ir.hossein.mypetshop.ui.presentation.addProduct
 
+import android.os.Build
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -25,19 +30,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import ir.hossein.mypetshop.R
 import ir.hossein.mypetshop.ui.theme.Green
 import ir.hossein.mypetshop.ui.theme.White
 import ir.hossein.mypetshop.ui.utils.RtlLayout
 
+@RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddProduct(
@@ -46,8 +53,15 @@ fun AddProduct(
 ) {
 
     val state by viewModel.state.collectAsState()
-    val categoryIconList = listOf(R.drawable.dog, R.drawable.cat, R.drawable.fish)
+    val categoryIconList = remember { listOf(R.drawable.dog, R.drawable.cat, R.drawable.fish) }
     val scrollState = rememberScrollState()
+
+    val resultLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            uri?.let { viewModel.setImage(uri = uri) }
+        }
+    )
 
     Column(
         modifier = Modifier
@@ -58,12 +72,19 @@ fun AddProduct(
     ) {
         Card(
             shape = RoundedCornerShape(20),
+            onClick = {
+                resultLauncher.launch(
+                    PickVisualMediaRequest()
+                )
+            }
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.camera),
+            AsyncImage(
+                model = state.image?.let {
+                    state.image
+                } ?: R.drawable.camera,
                 contentDescription = null,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Crop
             )
         }
         Spacer(modifier = Modifier.height(32.dp))
