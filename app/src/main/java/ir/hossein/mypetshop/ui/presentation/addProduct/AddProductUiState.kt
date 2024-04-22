@@ -1,11 +1,12 @@
 package ir.hossein.mypetshop.ui.presentation.addProduct
 
-import android.net.Uri
+import android.graphics.Bitmap
 
 data class AddProductUiState(
-    val name: String = "NewProduct",
+    val name: String = "",
     val price: String = "",
     val category: Int = -1,
     val amount: String = "",
-    val image: Uri? = null
+    val imageUri: Bitmap? = null,
+    val imagePath: String = ""
 )

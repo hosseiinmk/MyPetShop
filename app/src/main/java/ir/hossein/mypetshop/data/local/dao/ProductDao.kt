@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import ir.hossein.mypetshop.data.model.Product
-import ir.hossein.mypetshop.data.model.User
 import kotlinx.coroutines.flow.Flow
 
 @Dao

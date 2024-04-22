@@ -1,11 +1,11 @@
 package ir.hossein.mypetshop.ui.presentation.addProduct
 
-import android.os.Build
+import android.content.Context
+import android.graphics.Bitmap
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -30,21 +30,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import ir.hossein.mypetshop.R
 import ir.hossein.mypetshop.ui.theme.Green
 import ir.hossein.mypetshop.ui.theme.White
 import ir.hossein.mypetshop.ui.utils.RtlLayout
+import ir.hossein.mypetshop.ui.utils.log
+import java.io.File
 
-@RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddProduct(
@@ -53,21 +56,28 @@ fun AddProduct(
 ) {
 
     val state by viewModel.state.collectAsState()
-    val categoryIconList = remember { listOf(R.drawable.dog, R.drawable.cat, R.drawable.fish) }
-    val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     val resultLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri ->
-            uri?.let { viewModel.setImage(uri = uri) }
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { imageUri ->
+        imageUri?.let {
+            log("${context.filesDir}/${imageUri.pathSegments.last()}.jpeg")
+            viewModel.setImage(imageUri = imageUri, "${context.filesDir}/${imageUri.pathSegments.last()}.jpeg")
+            val file = File(context.filesDir, "${imageUri.pathSegments.last()}.jpeg")
+            context.openFileOutput(file.name, Context.MODE_PRIVATE).use { outputStream ->
+                viewModel.getImageBitmap(imageUri = imageUri).compress(
+                    Bitmap.CompressFormat.JPEG, 95, outputStream
+                )
+            }
         }
-    )
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 32.dp)
-            .verticalScroll(state = scrollState),
+            .verticalScroll(state = rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Card(
@@ -79,9 +89,7 @@ fun AddProduct(
             }
         ) {
             AsyncImage(
-                model = state.image?.let {
-                    state.image
-                } ?: R.drawable.camera,
+                model = state.imageUri ?: R.drawable.camera,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxWidth(),
@@ -94,7 +102,9 @@ fun AddProduct(
                 onValueChange = { viewModel.setProductName(productName = it) },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = "نام محصول") },
-                shape = RoundedCornerShape(20)
+                shape = RoundedCornerShape(20),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                singleLine = true
             )
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
@@ -103,7 +113,10 @@ fun AddProduct(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = "قیمت محصول") },
                 shape = RoundedCornerShape(20),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
+                ),
             )
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
@@ -112,7 +125,10 @@ fun AddProduct(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = "تعداد محصول") },
                 shape = RoundedCornerShape(20),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
             )
             Spacer(modifier = Modifier.height(16.dp))
             Row(
@@ -131,7 +147,7 @@ fun AddProduct(
                         onClick = { viewModel.setCategory(productCategory = it) }
                     ) {
                         Image(
-                            painter = painterResource(id = categoryIconList[it]),
+                            painter = painterResource(id = viewModel.categoryIcons[it]),
                             contentDescription = null,
                             modifier = Modifier
                                 .width(80.dp)

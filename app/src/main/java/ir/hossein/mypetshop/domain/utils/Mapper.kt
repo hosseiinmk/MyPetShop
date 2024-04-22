@@ -30,7 +30,8 @@ fun ProductData.mapToDomain() = ProductDomain(
     name = this.name,
     price = this.price,
     category = this.category,
-    amount = this.amount
+    amount = this.amount,
+    imagePath = this.imagePath
 )
 
 fun ProductDomain.mapToData() = ProductData(
@@ -38,5 +39,6 @@ fun ProductDomain.mapToData() = ProductData(
     name = this.name,
     price = this.price,
     category = this.category,
-    amount = this.amount
+    amount = this.amount,
+    imagePath = this.imagePath
 )

@@ -7,7 +7,9 @@ import dagger.hilt.components.SingletonComponent
 import ir.hossein.mypetshop.data.repository.ProductRepositoryImpl
 import ir.hossein.mypetshop.domain.repository.ProductRepository
 import ir.hossein.mypetshop.domain.usecase.productUseCase.AddProductUseCase
+import ir.hossein.mypetshop.domain.usecase.productUseCase.GetProductsUseCase
 import ir.hossein.mypetshop.domain.usecase.productUseCase.implement.AddProductUseCaseImpl
+import ir.hossein.mypetshop.domain.usecase.productUseCase.implement.GetProductsUseCaseImpl
 import javax.inject.Singleton
 
 @Module
@@ -25,4 +27,10 @@ abstract class ProductModule {
     abstract fun bindAddProductUseCase(
         addProductUseCaseImpl: AddProductUseCaseImpl
     ): AddProductUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindGetProductsUseCase(
+        getProductsUseCaseImpl: GetProductsUseCaseImpl
+    ): GetProductsUseCase
 }

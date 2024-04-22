@@ -1,5 +1,9 @@
 package ir.hossein.mypetshop.ui.presentation.home
 
+import ir.hossein.mypetshop.domain.model.Product
+
 data class HomeUiState(
-    val bannerSliderSize: Int = 1
+    val products: List<Product> = emptyList(),
+    val filteredProduct: List<Product> = emptyList(),
+    val selectedCategory: Int = 0
 )

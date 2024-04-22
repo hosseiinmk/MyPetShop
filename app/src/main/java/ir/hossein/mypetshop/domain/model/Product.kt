@@ -1,6 +1,5 @@
 package ir.hossein.mypetshop.domain.model
 
-import android.net.Uri
 import androidx.annotation.Keep
 
 @Keep
@@ -10,16 +9,16 @@ data class Product(
     val price: Int,
     val category: Int,
     val amount: Int,
-    val image: String
+    val imagePath: String
 ) {
      companion object {
          val default = Product(
              id = 0,
-             name = "NewProduct",
+             name = "",
              price = 0,
              category = -1,
              amount = 0,
-             image = ""
+             imagePath = ""
          )
      }
 }
