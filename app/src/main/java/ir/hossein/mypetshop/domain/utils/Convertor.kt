@@ -1,11 +1,11 @@
 package ir.hossein.mypetshop.domain.utils
 
-import ir.hossein.mypetshop.domain.model.Product as ProductDomain
-import ir.hossein.mypetshop.data.model.Product as ProductData
-import ir.hossein.mypetshop.data.model.User as UserData
-import ir.hossein.mypetshop.domain.model.User as UserDomain
+import ir.hossein.mypetshop.data.model.ProductDTO
+import ir.hossein.mypetshop.data.model.UserDTO
+import ir.hossein.mypetshop.domain.model.Product
+import ir.hossein.mypetshop.domain.model.User
 
-fun UserData.mapToDomain() = UserDomain(
+fun UserDTO.mapToDomain() = User(
     id = this.id,
     username = this.username,
     name = this.name,
@@ -15,7 +15,7 @@ fun UserData.mapToDomain() = UserDomain(
     thumbnail = this.thumbnail
 )
 
-fun UserDomain.mapToData() = UserData(
+fun User.mapToData() = UserDTO(
     id = this.id,
     username = this.username,
     name = this.name,
@@ -25,7 +25,7 @@ fun UserDomain.mapToData() = UserData(
     thumbnail = this.thumbnail
 )
 
-fun ProductData.mapToDomain() = ProductDomain(
+fun ProductDTO.mapToDomain() = Product(
     id = this.id,
     name = this.name,
     price = this.price,
@@ -34,7 +34,7 @@ fun ProductData.mapToDomain() = ProductDomain(
     imagePath = this.imagePath
 )
 
-fun ProductDomain.mapToData() = ProductData(
+fun Product.mapToData() = ProductDTO(
     id = this.id,
     name = this.name,
     price = this.price,

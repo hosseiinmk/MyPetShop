@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Keep
 @Entity(tableName = "products")
-data class Product(
+data class ProductDTO(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name: String,
